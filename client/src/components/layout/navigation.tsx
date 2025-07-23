@@ -1,3 +1,4 @@
+import React from "react";
 import { useWallet } from "@/contexts/wallet-context";
 import { Button } from "@/components/ui/button";
 import { formatAddress } from "@/lib/wallet-utils";
