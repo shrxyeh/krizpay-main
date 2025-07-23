@@ -1,3 +1,4 @@
+import React from "react";
 import { Home, QrCode, Wallet, BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocation, useNavigate } from "react-router-dom";

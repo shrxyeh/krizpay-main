@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useCallback, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -34,7 +35,11 @@ export function QRScanner({ onSectionChange, onQRProcessed }: QRScannerProps) {
             const scannedValue = result.getText();
             setManualInput(scannedValue);
             setScanning(false);
-            codeReader?.stopContinuousDecode(); // stop scanning after a result
+            if (videoRef.current && videoRef.current.srcObject) {
+              // Stop all video tracks to release the camera
+              const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
+              tracks.forEach(track => track.stop());
+            }
             // Always parse and pass the parsed result
             const parsed = parseQRCode(scannedValue);
             onQRProcessed(parsed);
@@ -49,8 +54,9 @@ export function QRScanner({ onSectionChange, onQRProcessed }: QRScannerProps) {
       });
     }
     return () => {
-      if (codeReader && typeof codeReader.stopContinuousDecode === "function") {
-        codeReader.stopContinuousDecode();
+      if (videoRef.current && videoRef.current.srcObject) {
+        const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
+        tracks.forEach(track => track.stop());
       }
       setScanning(false);
     };
